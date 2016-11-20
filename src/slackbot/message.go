@@ -1,8 +1,6 @@
 package slackbot
 
 import (
-	"fmt"
-
 	"github.com/nlopes/slack"
 
 	"../links"
@@ -38,14 +36,13 @@ func (m *Message) Analyse() bool {
 
 		// link already posted?
 		duplicates := link.FindDuplicates()
-		if len(duplicates) > 0 {
+		if duplicates.GetTotal() > 0 {
 			// TODO auteur + date
 			rtm.SendMessage(rtm.NewOutgoingMessage("Pssst! Someone already posted this link!", m.originalMsg.Channel))
 			continue
 		}
 
-		fmt.Printf("\n\n------------------\n\n")
-		rtm.SendMessage(rtm.NewOutgoingMessage("Thank you!", m.originalMsg.Channel))
+		rtm.SendMessage(rtm.NewOutgoingMessage("Link saved, Thank you!", m.originalMsg.Channel))
 		link.Save()
 	}
 
@@ -63,12 +60,29 @@ func (m *Message) GetLinks() []*links.Link {
 	// Links Filter
 	for _, attachment := range m.extendedLinkMsg.Attachments {
 		if len(attachment.TitleLink) > 0 {
-			fmt.Printf("- Link: %s, %s, %s\n", attachment.Title, attachment.TitleLink, attachment.Text)
 			link := links.NewLink(attachment.TitleLink)
 			link.SetTitle(attachment.Title)
+			link.SetSharedBy(m.extendedLinkMsg.User, getUserName(m.extendedLinkMsg.User))
+			link.SetSharedOn(m.originalMsg.Channel, getChannelName(m.originalMsg.Channel))
 			messagelinks = append(messagelinks, link)
 		}
 	}
 
 	return messagelinks
+}
+
+func getUserName(userID string) string {
+	userInfos, err := rtm.GetUserInfo(userID)
+	if err != nil {
+		return ""
+	}
+	return userInfos.Name
+}
+
+func getChannelName(channelID string) string {
+	channelInfos, err := rtm.GetChannelInfo(channelID)
+	if err != nil {
+		return ""
+	}
+	return channelInfos.Name
 }

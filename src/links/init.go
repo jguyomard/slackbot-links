@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	esIndex = "slackbot-bookmarks6"
+	esIndex = "slackbot-links"
 	esType  = "links"
 )
 
@@ -60,7 +60,10 @@ func createESIndexIfNeeded() bool {
 					"type":     "string",
 					"index":    "not_analyzed"
 				},
-				"date_published":{
+				"published_at":{
+					"type":"date"
+				},
+				"shared_at":{
 					"type":"date"
 				}
 			}

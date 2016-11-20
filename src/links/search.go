@@ -9,7 +9,15 @@ import (
 	"gopkg.in/olivere/elastic.v3"
 )
 
-func Search(params url.Values) []*Link {
+type SearchResult struct {
+	links         []*Link
+	total         int
+	perPage       int
+	currentOffset int
+}
+
+// Search allows to get multiple links from Elastic Search, that match the query
+func Search(params url.Values) *SearchResult {
 
 	searchService := es.Search().
 		Index(esIndex).
@@ -24,12 +32,48 @@ func Search(params url.Values) []*Link {
 		searchService.Query(query)
 	}
 
-	searchResult, err := searchService.Do()
+	elasticResult, err := searchService.Do()
 	if err != nil {
 		fmt.Printf("Links::Search() Errors : %s\n", err)
-		return []*Link{}
+		return nil
 	}
-	return searchResultsToLinks(searchResult)
+
+	res := elasticResultsToLinksResult(elasticResult)
+	res.perPage = getLimitSize(params)
+	res.currentOffset = getLimitOffset(params)
+	return res
+}
+
+func (r *SearchResult) GetLinks() []*Link {
+	return r.links
+}
+
+func (r *SearchResult) GetTotal() int {
+	return r.total
+}
+
+func (r *SearchResult) GetCursor() map[string]interface{} {
+
+	var previous interface{}
+	if r.currentOffset-r.perPage >= 0 {
+		previous = r.currentOffset - r.perPage
+	} else {
+		previous = nil
+	}
+
+	var next interface{}
+	if r.currentOffset+r.perPage < r.total {
+		next = r.currentOffset + r.perPage
+	} else {
+		next = nil
+	}
+
+	return map[string]interface{}{
+		"previous": previous,
+		"current":  r.currentOffset,
+		"next":     next,
+		"per_page": r.perPage,
+	}
 }
 
 func getQuery(params url.Values) *elastic.BoolQuery {
@@ -50,7 +94,7 @@ func getQuery(params url.Values) *elastic.BoolQuery {
 }
 
 func getSortInfo(params url.Values) elastic.SortInfo {
-	return elastic.SortInfo{Field: "date_published", Ascending: false}
+	return elastic.SortInfo{Field: "shared_at", Ascending: false}
 }
 
 func getLimitOffset(params url.Values) int {
@@ -58,7 +102,7 @@ func getLimitOffset(params url.Values) int {
 }
 
 func getLimitSize(params url.Values) int {
-	return getIntParamsOrDefault(params, "size", 100)
+	return getIntParamsOrDefault(params, "limit", 50)
 }
 
 func getIntParamsOrDefault(params url.Values, paramKey string, defaultValue int) int {
@@ -75,16 +119,18 @@ func getIntParamsOrDefault(params url.Values, paramKey string, defaultValue int)
 	return intVal
 }
 
-func searchResultsToLinks(searchResult *elastic.SearchResult) []*Link {
-	var links []*Link
+func elasticResultsToLinksResult(elasticResult *elastic.SearchResult) *SearchResult {
+	res := new(SearchResult)
 
 	var ttyp Link
-	for _, item := range searchResult.Each(reflect.TypeOf(ttyp)) {
+	for _, item := range elasticResult.Each(reflect.TypeOf(ttyp)) {
 		if link, ok := item.(Link); ok {
-			links = append(links, &link)
+			res.links = append(res.links, &link)
 			fmt.Printf("url=%s, title=%s\n", link.URL, link.Title)
 		}
 	}
 
-	return links
+	res.total = int(elasticResult.TotalHits())
+
+	return res
 }

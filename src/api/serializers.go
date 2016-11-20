@@ -1,12 +1,11 @@
 package api
 
-import "encoding/json"
-
-// Serializers
-func dataArraySerializer(res interface{}) string {
+func dataArraySerializer(data interface{}, meta interface{}) map[string]interface{} {
 	output := map[string]interface{}{
-		"data": res,
+		"data": data,
 	}
-	resJSON, _ := json.Marshal(output)
-	return string(resJSON)
+	if meta != nil {
+		output["meta"] = meta
+	}
+	return output
 }

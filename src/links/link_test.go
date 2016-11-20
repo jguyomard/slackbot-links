@@ -37,7 +37,7 @@ func TestFindDuplicate(t *testing.T) {
 	link := NewLink(testURL)
 	duplicates := link.FindDuplicates()
 
-	if len(duplicates) == 0 {
+	if duplicates.GetTotal() == 0 {
 		t.Fatal("link.FindDuplicates() error")
 	}
 }
