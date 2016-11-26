@@ -1,0 +1,86 @@
+FORMAT: 1A
+HOST: http://yourdomain.com/v1/
+
+# SlackBot-Links
+
+This is a simple REST API allowing consumers to search links shared on Slack.
+
+To install this bot, follow [installation instructions](https://github.com/jguyomard/slackbot-links/).
+
+
+## All Links [/links{?limit}{?offset}{?search}{?url}]
+
+### Search for a Link [GET]
+
++ Parameters
+
+    + limit (number, optional) - The maximum number of results to return.
+        + Default: `50`
+    + offset (number, optional) - Return results from this offset.
+        + Default: `0`
+    + search (string, optional) - Search by term.
+    + url (string, optional) - Search by url.
+
++ Response 200 (application/json)
+
+        {
+            "data" : [
+                {
+                    "id": "bc8f2c4e-dbd0-4fa5-8890-7c9fc28b3e61",
+                    "url": "http://marcelpociot.com/blog/2016-10-19-write-your-own-slack-bot-using-laravel"
+                    "title": "Write a Slack bot using Laravel and PHP",
+                    "author": null,
+                    "published_at": "2016-10-19 00:00:00",
+                    "excerpt": "This guide will [...]",
+                    "image_url": "http://marcelpociot.com/user/pages/blog/2016-10-19-write-your-own-slack-bot-using-laravel/Screen%20Shot%202016-10-19%20at%2010.36.15.png",
+
+                    "shared_at": "2016-11-21 21:04:34",
+                    "shared_by": {
+                        "id": "U2W0LTL4Q",
+                        "name": "julien"
+                    },
+                    "shared_on": {
+                        "id": "C2W0LTM4G",
+                        "name": "general"
+                    },
+                    "links": {
+                        "self": "/links/bc8f2c4e-dbd0-4fa5-8890-7c9fc28b3e61"
+                    },
+                }
+            ]
+        }
+
+## A Link [/links/{id}]
+
+### Retrieve a Link [GET]
+
++ Response 200 (application/json)
+
+        {
+            "data" : {
+                "id": "bc8f2c4e-dbd0-4fa5-8890-7c9fc28b3e61",
+                "url": "http://marcelpociot.com/blog/2016-10-19-write-your-own-slack-bot-using-laravel"
+                "title": "Write a Slack bot using Laravel and PHP",
+                "author": null,
+                "published_at": "2016-10-19 00:00:00",
+                "excerpt": "This guide will [...]",
+                "image_url": "http://marcelpociot.com/user/pages/blog/2016-10-19-write-your-own-slack-bot-using-laravel/Screen%20Shot%202016-10-19%20at%2010.36.15.png",
+
+                "shared_at": "2016-11-21 21:04:34",
+                "shared_by": {
+                    "id": "U2W0LTL4Q",
+                    "name": "julien"
+                },
+                "shared_on": {
+                    "id": "C2W0LTM4G",
+                    "name": "general"
+                },
+                "links": {
+                    "self": "/links/bc8f2c4e-dbd0-4fa5-8890-7c9fc28b3e61"
+                },
+            }
+        }
+
+### Delete a Link [DELETE]
+
++ Response 204
