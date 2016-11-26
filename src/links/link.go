@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"time"
 
+	log "github.com/Sirupsen/logrus"
+	"github.com/kennygrant/sanitize"
 	"github.com/satori/go.uuid"
 
 	"../mercury"
@@ -77,6 +79,13 @@ func (l *Link) FindDuplicates() *SearchResult {
 // Save this link to Elastic Search
 func (l *Link) Save() bool {
 
+	// Log
+	log.WithFields(log.Fields{
+		"action": "save",
+		"linkID": l.GetID(),
+		"link":   l,
+	}).Info("New link")
+
 	// Enrich this link
 	l.enrichMetasFromContent()
 
@@ -99,6 +108,16 @@ func (l *Link) Save() bool {
 }
 
 func (l *Link) Delete() bool {
+
+	// Log
+	log.WithFields(log.Fields{
+		"action":    "delete",
+		"linkID":    l.GetID(),
+		"linkURL":   l.URL,
+		"linkTitle": l.Title,
+	}).Info("Delete link")
+
+	// Delete from Elastic Search
 	_, err := es.Delete().
 		Index(esIndex).
 		Type(esType).
@@ -114,13 +133,16 @@ func (l *Link) Delete() bool {
 }
 
 func (l *Link) enrichMetasFromContent() {
-	infos, _ := mercury.ParseURL(l.URL)
+	infos, err := mercury.ParseURL(l.URL)
+	if err != nil {
+		return
+	}
 
 	l.Title = infos.Title
 	l.Author = infos.Author
 	l.Excerpt = infos.Excerpt
 	l.ImageURL = infos.ImageURL
-	l.Content = infos.Content
+	l.Content = sanitize.HTML(infos.Content)
 
 	datePublished, err := time.Parse("2006-01-02T15:04:05.000Z", infos.DatePublished)
 	if err == nil {

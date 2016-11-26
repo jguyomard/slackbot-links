@@ -14,18 +14,19 @@ var (
 	configFilePath = "./config.yaml"
 	configDefault  = &Config{
 		DebugMode:     false,
-		LogsDir:       "loinloinloin",
-		APIListenPort: 8092,
+		LogsDir:       "/var/log/slackbot-links",
+		APIListenPort: 9300,
 	}
 )
 
 // Config read from yaml file
 type Config struct {
-	DebugMode     bool   `yaml:"debugMode"`
-	LogsDir       string `yaml:"logsDir"`
-	APIListenPort int    `yaml:"apiListenPort"`
-	SlackToken    string `yaml:"slackToken"`
-	MercuryAPIKey string `yaml:"mercuryApiKey"`
+	DebugMode         bool     `yaml:"debugMode"`
+	LogsDir           string   `yaml:"logsDir"`
+	APIListenPort     int      `yaml:"apiListenPort"`
+	ElasticSearchURLS []string `yaml:"elasticSearchUrls"`
+	SlackToken        string   `yaml:"slackToken"`
+	MercuryAPIKey     string   `yaml:"mercuryApiKey"`
 }
 
 // SetFilePath to... set config filepath :)

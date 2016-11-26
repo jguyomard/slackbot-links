@@ -2,7 +2,11 @@ package links
 
 import (
 	"fmt"
+	"os"
 
+	"../config"
+
+	log "github.com/Sirupsen/logrus"
 	"gopkg.in/olivere/elastic.v3"
 )
 
@@ -23,10 +27,21 @@ func Init() {
 	}
 
 	// Elastic Search Connection
-	es, err = elastic.NewClient()
+	es, err = elastic.NewClient(
+		elastic.SetURL(config.Get().ElasticSearchURLS...),
+	)
 	if err != nil {
 		panic(err)
 	}
+
+	// Logging
+	log.SetFormatter(&log.JSONFormatter{})
+	logFileName := fmt.Sprintf("%s/%s", config.Get().LogsDir, "links.log")
+	logFile, err := os.OpenFile(logFileName, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0644)
+	if err != nil {
+		panic(err)
+	}
+	log.SetOutput(logFile)
 
 	// Create Index/Type?
 	createESIndexIfNeeded()
@@ -34,18 +49,17 @@ func Init() {
 
 func createESIndexIfNeeded() bool {
 
-	// L'index n'existe pas déjà ?
+	// Index already exists?
 	exists, err := es.IndexExists(esIndex).Do()
 	if err != nil {
 		panic(err)
 	}
 	if exists {
-		fmt.Printf("Index %s already exists.\n", esIndex)
 		return false
 	}
 
-	// Création de l'index
-	fmt.Printf("Create new index: %s...\n", esIndex)
+	// Create new index
+	fmt.Printf("Create new index: %s... ", esIndex)
 	createIndex, err := es.CreateIndex(esIndex).Do()
 	if err != nil {
 		panic(err)
@@ -80,5 +94,6 @@ func createESIndexIfNeeded() bool {
 		panic("ELASTIC FATAL ERROR: PutMapping failed!")
 	}
 
+	fmt.Println("OK")
 	return true
 }

@@ -12,7 +12,7 @@ import (
 func main() {
 
 	// Read command options
-	configFilePtr := flag.String("config-file", "/etc/slack-bookmarks/config.yaml", "conf file path")
+	configFilePtr := flag.String("config-file", "/etc/slackbot-links/config.yaml", "conf file path")
 	flag.Parse()
 
 	// Set config filepath

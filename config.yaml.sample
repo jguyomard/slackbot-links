@@ -1,5 +1,7 @@
-debugMode: true
-logsDir: /var/log/slack-bookmarks/
-apiListenPort: 8092
+debugMode: false
+logsDir: /tmp
+apiListenPort: 9300
+elasticSearchUrls:
+  - http://localhost:9200
 slackToken: "YOUR_BOT_TOKEN_HERE"
-mercuryApiKey: "YOUR_API_KEY_HERE"
+mercuryApiKey: ""

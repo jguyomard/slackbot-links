@@ -85,7 +85,7 @@ func getQuery(params url.Values) *elastic.BoolQuery {
 
 	query := elastic.NewBoolQuery()
 	if search != "" {
-		query.Must(elastic.NewMultiMatchQuery(search, "title^8"))
+		query.Must(elastic.NewMultiMatchQuery(search, "title^3", "url^3", "excerpt^2", "content^1"))
 	}
 	if url != "" {
 		query.Must(elastic.NewTermQuery("url", url))
@@ -126,7 +126,6 @@ func elasticResultsToLinksResult(elasticResult *elastic.SearchResult) *SearchRes
 	for _, item := range elasticResult.Each(reflect.TypeOf(ttyp)) {
 		if link, ok := item.(Link); ok {
 			res.links = append(res.links, &link)
-			fmt.Printf("url=%s, title=%s\n", link.URL, link.Title)
 		}
 	}
 

@@ -1,6 +1,8 @@
 package slackbot
 
 import (
+	"fmt"
+
 	"github.com/nlopes/slack"
 
 	"../links"
@@ -37,12 +39,18 @@ func (m *Message) Analyse() bool {
 		// link already posted?
 		duplicates := link.FindDuplicates()
 		if duplicates.GetTotal() > 0 {
-			// TODO auteur + date
-			rtm.SendMessage(rtm.NewOutgoingMessage("Pssst! Someone already posted this link!", m.originalMsg.Channel))
+			duplicateLink := duplicates.GetLinks()[0]
+			duplicateAuthor := duplicateLink.SharedBy.Name
+			if duplicateAuthor == "" {
+				duplicateAuthor = "Someone"
+			}
+			// TODO add duplicate date?
+			duplicateMsg := fmt.Sprintf("Pssst! %s already posted this link!", duplicateAuthor)
+			rtm.SendMessage(rtm.NewOutgoingMessage(duplicateMsg, m.originalMsg.Channel))
 			continue
 		}
 
-		rtm.SendMessage(rtm.NewOutgoingMessage("Link saved, Thank you!", m.originalMsg.Channel))
+		//rtm.SendMessage(rtm.NewOutgoingMessage("Link saved, Thank you!", m.originalMsg.Channel))
 		link.Save()
 	}
 
