@@ -27,7 +27,11 @@ func Listen() {
 }
 
 func handleSearchLinks(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	linksResult := links.Search(r.URL.Query())
+	linksResult, err := links.Search(r.URL.Query())
+	if err != nil {
+		http.Error(w, errors(err.Error(), 400).ToJSON(), 400)
+		return
+	}
 	meta := map[string]interface{}{
 		"cursor": linksResult.GetCursor(),
 	}

@@ -17,14 +17,14 @@ type SearchResult struct {
 }
 
 // Search allows to get multiple links from Elastic Search, that match the query
-func Search(params url.Values) *SearchResult {
+func Search(params url.Values) (*SearchResult, error) {
 
 	searchService := es.Search().
 		Index(esIndex).
 		Type(esType).
 		From(getLimitOffset(params)).
 		Size(getLimitSize(params)).
-		SortWithInfo(getSortInfo(params)).
+		SortBy(getSortInfo(params)...).
 		Pretty(true)
 
 	query := getQuery(params)
@@ -35,13 +35,13 @@ func Search(params url.Values) *SearchResult {
 	elasticResult, err := searchService.Do()
 	if err != nil {
 		fmt.Printf("Links::Search() Errors : %s\n", err)
-		return nil
+		return nil, fmt.Errorf("Invalid Seach Query")
 	}
 
 	res := elasticResultsToLinksResult(elasticResult)
 	res.perPage = getLimitSize(params)
 	res.currentOffset = getLimitOffset(params)
-	return res
+	return res, nil
 }
 
 func (r *SearchResult) GetLinks() []*Link {
@@ -85,7 +85,14 @@ func getQuery(params url.Values) *elastic.BoolQuery {
 
 	query := elastic.NewBoolQuery()
 	if search != "" {
-		query.Must(elastic.NewMultiMatchQuery(search, "title^3", "url^3", "excerpt^2", "content^1"))
+		matchQuery := elastic.NewSimpleQueryStringQuery(search).
+			DefaultOperator("and").
+			Field("title^3").
+			Field("url^3").
+			Field("author^2").
+			Field("excerpt^2").
+			Field("content^1")
+		query.Must(matchQuery)
 	}
 	if url != "" {
 		query.Must(elastic.NewTermQuery("url", url))
@@ -93,8 +100,13 @@ func getQuery(params url.Values) *elastic.BoolQuery {
 	return query
 }
 
-func getSortInfo(params url.Values) elastic.SortInfo {
-	return elastic.SortInfo{Field: "shared_at", Ascending: false}
+func getSortInfo(params url.Values) []elastic.Sorter {
+	var sorters []elastic.Sorter
+	if params.Get("search") != "" {
+		sorters = append(sorters, elastic.NewScoreSort())
+	}
+	sorters = append(sorters, elastic.SortInfo{Field: "shared_at", Ascending: false})
+	return sorters
 }
 
 func getLimitOffset(params url.Values) int {

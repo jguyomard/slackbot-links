@@ -73,7 +73,8 @@ func (l *Link) GetID() string {
 func (l *Link) FindDuplicates() *SearchResult {
 	params := url.Values{}
 	params.Set("url", l.URL)
-	return Search(params)
+	search, _ := Search(params)
+	return search
 }
 
 // Save this link to Elastic Search
@@ -140,8 +141,8 @@ func (l *Link) enrichMetasFromContent() {
 
 	l.Title = infos.Title
 	l.Author = infos.Author
-	l.Excerpt = infos.Excerpt
 	l.ImageURL = infos.ImageURL
+	l.Excerpt = sanitize.HTML(infos.Excerpt)
 	l.Content = sanitize.HTML(infos.Content)
 
 	datePublished, err := time.Parse("2006-01-02T15:04:05.000Z", infos.DatePublished)
