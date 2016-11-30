@@ -47,6 +47,14 @@ func (l *Link) SetTitle(title string) {
 	l.Title = title
 }
 
+func (l *Link) SetExcerpt(excerpt string) {
+	l.Excerpt = sanitize.HTML(excerpt)
+}
+
+func (l *Link) SetImageURL(imageURL string) {
+	l.ImageURL = imageURL
+}
+
 func (l *Link) SetSharedAt(date *time.Time) {
 	l.SharedAt = date
 }
@@ -139,10 +147,17 @@ func (l *Link) enrichMetasFromContent() {
 		return
 	}
 
-	l.Title = infos.Title
+	if len(infos.Title) > 0 {
+		l.SetTitle(infos.Title)
+	}
+	if len(infos.Excerpt) > 0 {
+		l.SetExcerpt(infos.Excerpt)
+	}
+	if len(infos.ImageURL) > 0 {
+		l.SetImageURL(infos.ImageURL)
+	}
+
 	l.Author = infos.Author
-	l.ImageURL = infos.ImageURL
-	l.Excerpt = sanitize.HTML(infos.Excerpt)
 	l.Content = sanitize.HTML(infos.Content)
 
 	datePublished, err := time.Parse("2006-01-02T15:04:05.000Z", infos.DatePublished)

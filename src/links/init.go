@@ -69,18 +69,18 @@ func createESIndexIfNeeded() bool {
 	}
 
 	mapping := `{
-			"properties":{
-        "url":{
-					"type":     "string",
-					"index":    "not_analyzed"
-				},
-				"published_at":{
-					"type":"date"
-				},
-				"shared_at":{
-					"type":"date"
-				}
+		"properties":{
+			"url":{
+				"type":  "string",
+				"index": "not_analyzed"
+			},
+			"published_at":{
+				"type":"date"
+			},
+			"shared_at":{
+				"type":"date"
 			}
+		}
 	}`
 	putMapping, err := es.PutMapping().
 		Index(esIndex).

@@ -26,9 +26,11 @@ type ParseInfos struct {
 	Domain        string
 	WordCount     int `json:"word_count"`
 	Direction     string
-	TotalPages    int `json:"total_pages"`
+	TotalPages    int    `json:"total_pages"`
+	ErrorMessage  string `json:"errorMessage"`
 }
 
+// ParseURL transforms web pages into clean text using Mercury Parser
 func ParseURL(contentURL string) (*ParseInfos, error) {
 	apiKey := config.Get().MercuryAPIKey
 	if apiKey == "" {
@@ -61,6 +63,9 @@ func ParseURL(contentURL string) (*ParseInfos, error) {
 	var infos ParseInfos
 	if err := json.Unmarshal(body, &infos); err != nil {
 		return nil, err
+	}
+	if r.StatusCode >= 400 {
+		return &infos, fmt.Errorf("Mercury StatusCode Error : %d\n", r.StatusCode)
 	}
 
 	return &infos, nil

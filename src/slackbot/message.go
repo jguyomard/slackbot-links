@@ -70,6 +70,8 @@ func (m *Message) GetLinks() []*links.Link {
 		if len(attachment.TitleLink) > 0 {
 			link := links.NewLink(attachment.TitleLink)
 			link.SetTitle(attachment.Title)
+			link.SetExcerpt(attachment.Text)
+			link.SetImageURL(attachment.ImageURL)
 			link.SetSharedBy(m.extendedLinkMsg.User, getUserName(m.extendedLinkMsg.User))
 			link.SetSharedOn(m.originalMsg.Channel, getChannelName(m.originalMsg.Channel))
 			messagelinks = append(messagelinks, link)
