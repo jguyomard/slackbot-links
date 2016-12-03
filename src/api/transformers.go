@@ -3,7 +3,7 @@ package api
 import (
 	"fmt"
 
-	"../links"
+	"github.com/jguyomard/slackbot-links/src/links"
 )
 
 func linkTransformer(item interface{}) interface{} {

@@ -5,7 +5,7 @@ import (
 
 	"github.com/nlopes/slack"
 
-	"../config"
+	"github.com/jguyomard/slackbot-links/src/config"
 )
 
 var (

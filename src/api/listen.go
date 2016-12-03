@@ -6,8 +6,8 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 
-	"../config"
-	"../links"
+	"github.com/jguyomard/slackbot-links/src/config"
+	"github.com/jguyomard/slackbot-links/src/links"
 )
 
 // Listen starts api web server

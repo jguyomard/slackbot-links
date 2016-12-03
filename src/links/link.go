@@ -10,7 +10,7 @@ import (
 	"github.com/kennygrant/sanitize"
 	"github.com/satori/go.uuid"
 
-	"../mercury"
+	"github.com/jguyomard/slackbot-links/src/mercury"
 )
 
 type Link struct {

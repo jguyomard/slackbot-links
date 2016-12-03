@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"../config"
+	"github.com/jguyomard/slackbot-links/src/config"
 
 	log "github.com/Sirupsen/logrus"
 	"gopkg.in/olivere/elastic.v3"

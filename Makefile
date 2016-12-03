@@ -7,19 +7,12 @@ help:
 	@echo " - make clean - remove bin files"
 
 build:
-	go get github.com/julienschmidt/httprouter
-	go get github.com/nlopes/slack
-	go get gopkg.in/olivere/elastic.v3
-	go get gopkg.in/yaml.v2
-	go get github.com/satori/go.uuid
-	go get github.com/Sirupsen/logrus
-	go get github.com/kennygrant/sanitize
-
+	go get -d -v ./...
 	go build -o slackbot-links main.go
 
 test:
-	go test ./src/links/ -config-file=$(configFile)
-	go test ./src/mercury/ -config-file=$(configFile)
+	go test ./src/links/ -config-file=$(configFile) ${ARGS}
+	go test ./src/mercury/ -config-file=$(configFile) ${ARGS}
 
 docapi:
 	[ ! -f snowboard ] && curl -L https://github.com/subosito/snowboard/releases/download/v0.4.3/snowboard-v0.4.3.linux-amd64.tar.gz | tar -xz || true

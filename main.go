@@ -3,10 +3,10 @@ package main
 import (
 	"flag"
 
-	"./src/api"
-	"./src/config"
-	"./src/links"
-	"./src/slackbot"
+	"github.com/jguyomard/slackbot-links/src/api"
+	"github.com/jguyomard/slackbot-links/src/config"
+	"github.com/jguyomard/slackbot-links/src/links"
+	"github.com/jguyomard/slackbot-links/src/slackbot"
 )
 
 func main() {

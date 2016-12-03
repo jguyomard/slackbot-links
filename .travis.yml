@@ -1,0 +1,28 @@
+language: go
+
+go:
+  - 1.7
+
+# travis elasticsearch default version is 1.4... we want 2.x
+addons:
+  apt:
+    sources:
+      - elasticsearch-2.x
+    packages:
+      elasticsearch
+
+sudo: required
+
+before_install:
+  - sudo service elasticsearch start
+
+install:
+  - make build
+  - cp config.yaml.sample config.yaml
+
+before_script:
+  - sleep 10 # https://docs.travis-ci.com/user/database-setup/#ElasticSearch
+  - curl localhost:9200
+
+script:
+  - make ARGS="-tags=travis" test
