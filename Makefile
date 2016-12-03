@@ -2,9 +2,10 @@ configFile=$(shell pwd)/config.yaml
 
 help:
 	@echo "Available commands:"
-	@echo " - make build - compile project and dependencies"
-	@echo " - make test 	- run all tests"
-	@echo " - make clean - remove bin files"
+	@echo " - make build  - compile project and dependencies"
+	@echo " - make test   - run all tests"
+	@echo " - make docapi - generate html documentation from API.apib file"
+	@echo " - make clean  - remove bin files"
 
 build:
 	go get -d -v ./...
