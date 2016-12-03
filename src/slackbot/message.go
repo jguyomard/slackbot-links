@@ -5,7 +5,7 @@ import (
 
 	"github.com/nlopes/slack"
 
-	"../links"
+	"github.com/jguyomard/slackbot-links/src/links"
 )
 
 type Message struct {

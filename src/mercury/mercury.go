@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"../config"
+	"github.com/jguyomard/slackbot-links/src/config"
 )
 
 const (

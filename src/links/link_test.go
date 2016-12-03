@@ -4,7 +4,7 @@ import (
 	"flag"
 	"testing"
 
-	"../config"
+	"github.com/jguyomard/slackbot-links/src/config"
 )
 
 var (
