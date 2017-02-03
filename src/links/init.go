@@ -29,6 +29,7 @@ func Init() {
 	// Elastic Search Connection
 	es, err = elastic.NewClient(
 		elastic.SetURL(config.Get().ElasticSearchURLS...),
+		elastic.SetSniff(!config.Get().ElasticSearchDisableSniffing),
 	)
 	if err != nil {
 		panic(err)
