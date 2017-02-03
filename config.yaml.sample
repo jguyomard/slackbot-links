@@ -3,5 +3,6 @@ logsDir: /tmp
 apiListenPort: 9300
 elasticSearchUrls:
   - http://localhost:9200
+elasticSearchDisableSniffing: false
 slackToken: "YOUR_BOT_TOKEN_HERE"
 mercuryApiKey: ""
