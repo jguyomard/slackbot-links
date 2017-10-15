@@ -34,6 +34,7 @@ func handleSearchLinks(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	}
 	meta := map[string]interface{}{
 		"cursor": linksResult.GetCursor(),
+		"total":  linksResult.GetTotal(),
 	}
 	fmt.Fprintf(w, "%s", collection(linksResult.GetLinks(), linkTransformer).SetMeta(meta).ToJSON())
 }
