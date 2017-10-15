@@ -1,13 +1,14 @@
 package links
 
 import (
+	"context"
 	"fmt"
 	"os"
 
 	"github.com/jguyomard/slackbot-links/src/config"
 
 	log "github.com/Sirupsen/logrus"
-	"gopkg.in/olivere/elastic.v3"
+	"gopkg.in/olivere/elastic.v5"
 )
 
 const (
@@ -51,8 +52,10 @@ func Init() {
 
 func createESIndexIfNeeded() bool {
 
+	ctx := context.Background()
+
 	// Index already exists?
-	exists, err := es.IndexExists(esIndex).Do()
+	exists, err := es.IndexExists(esIndex).Do(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -62,7 +65,7 @@ func createESIndexIfNeeded() bool {
 
 	// Create new index
 	fmt.Printf("Create new index: %s... ", esIndex)
-	createIndex, err := es.CreateIndex(esIndex).Do()
+	createIndex, err := es.CreateIndex(esIndex).Do(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -107,7 +110,7 @@ func createESIndexIfNeeded() bool {
 		Index(esIndex).
 		Type(esType).
 		BodyString(mapping).
-		Do()
+		Do(ctx)
 	if err != nil {
 		panic(err)
 	}

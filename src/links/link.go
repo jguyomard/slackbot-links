@@ -1,6 +1,7 @@
 package links
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -99,13 +100,15 @@ func (l *Link) Save() bool {
 	l.enrichMetasFromContent()
 
 	// Save to Elastic Search
+	ctx := context.Background()
+
 	_, err := es.Index().
 		Index(esIndex).
 		Type(esType).
 		Id(l.GetID()).
 		BodyJson(l).
-		Refresh(true).
-		Do()
+		Refresh("true").
+		Do(ctx)
 
 	if err != nil {
 		resJSON, _ := json.Marshal(l)
@@ -127,11 +130,13 @@ func (l *Link) Delete() bool {
 	}).Info("Delete link")
 
 	// Delete from Elastic Search
+	ctx := context.Background()
+
 	_, err := es.Delete().
 		Index(esIndex).
 		Type(esType).
 		Id(l.GetID()).
-		Do()
+		Do(ctx)
 
 	if err != nil {
 		fmt.Printf("ES Error: %s\n", err)
