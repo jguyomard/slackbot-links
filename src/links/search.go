@@ -79,7 +79,8 @@ func (r *SearchResult) GetCursor() map[string]interface{} {
 func getQuery(params url.Values) *elastic.BoolQuery {
 	search := params.Get("search")
 	url := params.Get("url")
-	if search == "" && url == "" {
+	sharedby := params.Get("sharedby")
+	if search == "" && url == "" && sharedby == "" {
 		return nil
 	}
 
@@ -87,6 +88,8 @@ func getQuery(params url.Values) *elastic.BoolQuery {
 	if search != "" {
 		matchQuery := elastic.NewSimpleQueryStringQuery(search).
 			DefaultOperator("and").
+			Field("shared_by.name^4").
+			Field("shared_on.name^4").
 			Field("title^3").
 			Field("url^3").
 			Field("author^2").
@@ -96,6 +99,9 @@ func getQuery(params url.Values) *elastic.BoolQuery {
 	}
 	if url != "" {
 		query.Must(elastic.NewTermQuery("url", url))
+	}
+	if sharedby != "" {
+		query.Must(elastic.NewTermQuery("shared_by.name", sharedby))
 	}
 	return query
 }
