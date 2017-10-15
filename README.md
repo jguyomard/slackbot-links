@@ -4,6 +4,7 @@ Do you use Slack? Do you share links with your co-workers?
 SlackBot-Links store all theses urls, enrich them with metadata, and expose them through a REST API.
 You can now find shared urls by searching in their title, content, author name...
 
+
 ## Get Started
 
 ### 1. Build Slackbot Links
@@ -50,6 +51,7 @@ You can now share link on `#links` and fetch them using REST API :
 curl localhost:9300/v1/links/
 ```
 
+
 ## API
 
 REST API Documentation can be found [here](https://jguyomard.github.io/slackbot-links).
@@ -62,6 +64,20 @@ make docapi
 ```
 
 
+## Commands
+
+### `restore`
+
+This command recreates the Elasticsearch index from a given `links.log` log file.
+This is very useful for fast testing with a given scenario, or for initializing a staging environment, for instance.
+
+```
+slackbot-links -config-file=/etc/slackbot-links/config.yaml -links-file=./links-tests.log restore
+```
+
+If a link already exists (same ID), it is updated.
+
+
 ## Testing
 
 To run the test suite:
@@ -69,6 +85,7 @@ To run the test suite:
 ```
 make test
 ```
+
 
 ## Issues
 
