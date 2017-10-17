@@ -10,11 +10,13 @@ import (
 )
 
 var (
-	testURL                   = "http://marcelpociot.com/blog/2016-10-19-write-your-own-slack-bot-using-laravel"
-	testExpectedTitle         = "Write a Slack bot using Laravel and PHP"
-	testExpectedDatePublished = "2016-10-19T00:00:00.000Z"
-	testExpectedImageURL      = "http://marcelpociot.com/user/pages/blog/2016-10-19-write-your-own-slack-bot-using-laravel/Screen%20Shot%202016-10-19%20at%2010.36.15.png"
+	testURL                   = "https://ilonet.fr/welcome-to-hugo/"
+	testExpectedTitle         = "Welcome to Hugo!"
+	testExpectedDatePublished = "2016-06-11T00:00:00.000Z"
+	testExpectedImageURL      = ""
 	testExpectedTotalPages    = 1
+	testExpectedWordCount     = 92
+	testExpectedDirection     = "ltr"
 )
 
 func init() {
@@ -43,6 +45,14 @@ func TestParse(t *testing.T) {
 	}
 
 	if infos.TotalPages != testExpectedTotalPages {
+		t.Fatal("mercury.Parse(): incorrect title")
+	}
+
+	if infos.Direction != testExpectedDirection {
+		t.Fatal("mercury.Parse(): incorrect title")
+	}
+
+	if infos.WordCount != testExpectedWordCount {
 		t.Fatal("mercury.Parse(): incorrect title")
 	}
 }
