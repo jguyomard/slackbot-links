@@ -33,7 +33,7 @@ This bot use Elastic Search to save links. The client connects to Elasticsearch 
 
 For instance, to start Elastic Search using official docker image:
 ```
-docker run -d -p 9200:9200 elasticsearch
+docker run -d -p 9200:9200 elasticsearch:2
 ```
 
 ### 4. Run this bot

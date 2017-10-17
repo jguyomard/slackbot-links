@@ -11,8 +11,9 @@ import (
 )
 
 const (
-	esIndex = "slackbot-links"
-	esType  = "links"
+	esIndex    = "slackbot-links"
+	esType     = "links"
+	esAnalyzer = "french"
 )
 
 var (
@@ -75,8 +76,27 @@ func createESIndexIfNeeded() bool {
 				"type":  "string",
 				"index": "not_analyzed"
 			},
+			"title":{
+				"type": "string",
+				"analyzer": "` + esAnalyzer + `"
+			},
+			"author":{
+				"type": "string"
+			},
+			"excerpt":{
+				"type": "string",
+				"analyzer": "` + esAnalyzer + `"
+			},
 			"published_at":{
 				"type":"date"
+			},
+			"image_url":{
+				"type":  "string",
+				"index": "not_analyzed"
+			},
+			"content":{
+				"type": "string",
+				"analyzer": "` + esAnalyzer + `"
 			},
 			"shared_at":{
 				"type":"date"
