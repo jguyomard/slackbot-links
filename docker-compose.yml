@@ -1,0 +1,17 @@
+version: "2"
+
+services:
+  slackbot-links:
+    image: jguyomard/slackbot-links
+    volumes:
+     - ./config.yaml:/etc/slackbot-links/config.yaml
+    ports:
+     - 127.0.0.1:9300:9300
+    depends_on:
+      - elasticsearch
+    command: ['wait-for', 'elasticsearch:9200', 'slackbot-links']
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.5
+    environment:
+      - xpack.security.enabled=false
+      - xpack.monitoring.enabled=false

@@ -26,6 +26,7 @@ func Listen() {
 	// Check Auth
 	_, err := rtm.AuthTest()
 	if err != nil {
+		fmt.Printf("Slack Error: %s\n", err)
 		panic("Unable to connect to Slack ; invalid token?")
 	}
 

@@ -64,6 +64,21 @@ make docapi
 ```
 
 
+## Docker image
+
+You can also run this slackbot using its Docker image:
+
+```
+docker run -d --name slackbot-links -p 9300:9300 -v $PWD/config.yaml:/etc/slackbot-links/config.yaml jguyomard/slackbot-links
+```
+
+If you also need to run ElasticSearch, prefer docker-compose:
+
+```
+docker-compose up
+```
+
+
 ## Commands
 
 ### `restore`
