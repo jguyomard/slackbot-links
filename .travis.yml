@@ -3,17 +3,15 @@ language: go
 go:
   - 1.7
 
-# travis elasticsearch default version is 1.4... we want 2.x
-addons:
-  apt:
-    sources:
-      - elasticsearch-2.x
-    packages:
-      elasticsearch
-
 sudo: required
 
+env:
+  global:
+    - ES_VERSION=2.4.6
+
 before_install:
+  - curl -O https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/deb/elasticsearch/${ES_VERSION}/elasticsearch-${ES_VERSION}.deb
+  - sudo dpkg -i --force-confnew elasticsearch-${ES_VERSION}.deb
   - sudo service elasticsearch start
 
 install:
@@ -21,8 +19,7 @@ install:
   - cp config.yaml.sample config.yaml
 
 before_script:
-  - sleep 10 # https://docs.travis-ci.com/user/database-setup/#ElasticSearch
-  - curl localhost:9200
+  - until curl --silent -XGET --fail http://localhost:9200; do printf '.'; sleep 1; done
 
 script:
   - make ARGS="-tags=travis" test
