@@ -29,11 +29,11 @@ Then, invite this bot to channels of your choice (`#links` for instance).
 
 ### 3. Start Elastic Search
 
-This bot use Elastic Search to save links. The client connects to Elasticsearch on `http://localhost:9200` by default.
+This bot use Elastic Search 5.x to save links. The client connects to Elasticsearch on `http://localhost:9200` by default.
 
 For instance, to start Elastic Search using official docker image:
 ```
-docker run -d -p 9200:9200 elasticsearch:2
+docker run -d -p 9200:9200 elasticsearch:5
 ```
 
 ### 4. Run this bot

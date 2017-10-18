@@ -1,12 +1,13 @@
 package links
 
 import (
+	"context"
 	"fmt"
 	"net/url"
 	"reflect"
 	"strconv"
 
-	"gopkg.in/olivere/elastic.v3"
+	"gopkg.in/olivere/elastic.v5"
 )
 
 type SearchResult struct {
@@ -18,6 +19,8 @@ type SearchResult struct {
 
 // Search allows to get multiple links from Elastic Search, that match the query
 func Search(params url.Values) (*SearchResult, error) {
+
+	ctx := context.Background()
 
 	searchService := es.Search().
 		Index(esIndex).
@@ -32,7 +35,7 @@ func Search(params url.Values) (*SearchResult, error) {
 		searchService.Query(query)
 	}
 
-	elasticResult, err := searchService.Do()
+	elasticResult, err := searchService.Do(ctx)
 	if err != nil {
 		fmt.Printf("Links::Search() Errors : %s\n", err)
 		return nil, fmt.Errorf("Invalid Seach Query")

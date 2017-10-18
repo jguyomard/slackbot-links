@@ -23,7 +23,9 @@ func Listen() {
 
 	// Listen!
 	fmt.Println("API Listen on port", conf.APIListenPort)
-	http.ListenAndServe(fmt.Sprintf(":%d", conf.APIListenPort), NewAPIMiddleware(router))
+	if err := http.ListenAndServe(fmt.Sprintf(":%d", conf.APIListenPort), NewAPIMiddleware(router)); err != nil {
+		panic(err)
+	}
 }
 
 func handleSearchLinks(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
