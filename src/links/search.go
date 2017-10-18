@@ -10,11 +10,16 @@ import (
 	"gopkg.in/olivere/elastic.v5"
 )
 
+// SearchResult contains links that match the query, aggregations (stats) and total hits
 type SearchResult struct {
 	links         []*Link
 	total         int
 	perPage       int
 	currentOffset int
+	stats         struct {
+		sharedBy map[string]int64
+		sharedAt map[string]int64
+	}
 }
 
 // Search allows to get multiple links from Elastic Search, that match the query
@@ -28,6 +33,8 @@ func Search(params url.Values) (*SearchResult, error) {
 		From(getLimitOffset(params)).
 		Size(getLimitSize(params)).
 		SortBy(getSortInfo(params)...).
+		Aggregation("shared_by", elastic.NewTermsAggregation().Field("shared_by.name.keyword").Size(50)).
+		Aggregation("shared_at", elastic.NewDateHistogramAggregation().Field("shared_at").Interval("month")).
 		Pretty(true)
 
 	query := getQuery(params)
@@ -47,14 +54,17 @@ func Search(params url.Values) (*SearchResult, error) {
 	return res, nil
 }
 
+// GetLinks returns current page links
 func (r *SearchResult) GetLinks() []*Link {
 	return r.links
 }
 
+// GetTotal returns total links count (total hits), for this SearchResult
 func (r *SearchResult) GetTotal() int {
 	return r.total
 }
 
+// GetCursor returns pagination (with cursors)
 func (r *SearchResult) GetCursor() map[string]interface{} {
 
 	var previous interface{}
@@ -76,6 +86,14 @@ func (r *SearchResult) GetCursor() map[string]interface{} {
 		"current":  r.currentOffset,
 		"next":     next,
 		"per_page": r.perPage,
+	}
+}
+
+// GetStats return stats (aggregations), for this SearchResult
+func (r *SearchResult) GetStats() map[string]interface{} {
+	return map[string]interface{}{
+		"shared_by": r.stats.sharedBy,
+		"shared_at": r.stats.sharedAt,
 	}
 }
 
@@ -143,6 +161,7 @@ func getIntParamsOrDefault(params url.Values, paramKey string, defaultValue int)
 func elasticResultsToLinksResult(elasticResult *elastic.SearchResult) *SearchResult {
 	res := new(SearchResult)
 
+	// Links
 	var ttyp Link
 	for _, item := range elasticResult.Each(reflect.TypeOf(ttyp)) {
 		if link, ok := item.(Link); ok {
@@ -150,6 +169,21 @@ func elasticResultsToLinksResult(elasticResult *elastic.SearchResult) *SearchRes
 		}
 	}
 
+	// Stats: Deserialize aggregations
+	if agg, found := elasticResult.Aggregations.Terms("shared_by"); found {
+		res.stats.sharedBy = make(map[string]int64)
+		for _, bucket := range agg.Buckets {
+			res.stats.sharedBy[bucket.Key.(string)] = bucket.DocCount
+		}
+	}
+	if agg, found := elasticResult.Aggregations.Histogram("shared_at"); found {
+		res.stats.sharedAt = make(map[string]int64)
+		for _, bucket := range agg.Buckets {
+			res.stats.sharedAt[(*bucket.KeyAsString)[:7]] = bucket.DocCount
+		}
+	}
+
+	// Total
 	res.total = int(elasticResult.TotalHits())
 
 	return res
