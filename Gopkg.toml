@@ -46,8 +46,8 @@
   name = "github.com/satori/go.uuid"
 
 [[constraint]]
-  branch = "master"
-  name = "gopkg.in/olivere/elastic.v5"
+  branch = "release-branch.v6"
+  name = "github.com/olivere/elastic"
 
 [[constraint]]
   branch = "v2"

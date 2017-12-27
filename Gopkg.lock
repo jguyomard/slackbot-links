@@ -32,6 +32,12 @@
   revision = "ccf0351050c69b08f9c48f3e876f4cd5564463e8"
 
 [[projects]]
+  branch = "release-branch.v6"
+  name = "github.com/olivere/elastic"
+  packages = [".","config","uritemplates"]
+  revision = "7a065d53ac847c9aba9385e84fa24ef4647a6ae2"
+
+[[projects]]
   branch = "master"
   name = "github.com/pkg/errors"
   packages = ["."]
@@ -62,12 +68,6 @@
   revision = "83801418e1b59fb1880e363299581ee543af32ca"
 
 [[projects]]
-  branch = "master"
-  name = "gopkg.in/olivere/elastic.v5"
-  packages = [".","config","uritemplates"]
-  revision = "79ff368708b3a2a9da641dc831d95fd0782bf4ef"
-
-[[projects]]
   branch = "v2"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
@@ -76,6 +76,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "4449eaa7821c11cec0f88aaf8176694376b328fd42297b8b0ed0af0a49340673"
+  inputs-digest = "23ec572eee872412ca24c3ef6b64f0fc475988881c19aa4a84686f7277382122"
   solver-name = "gps-cdcl"
   solver-version = 1

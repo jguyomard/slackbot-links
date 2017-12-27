@@ -8,7 +8,7 @@ import (
 	"github.com/jguyomard/slackbot-links/src/config"
 
 	log "github.com/Sirupsen/logrus"
-	"gopkg.in/olivere/elastic.v5"
+	"github.com/olivere/elastic"
 )
 
 const (
@@ -76,29 +76,29 @@ func createESIndexIfNeeded() bool {
 	mapping := `{
 		"properties":{
 			"url":{
-				"type":  "string",
-				"index": "not_analyzed"
+				"type":  "keyword",
+				"index": true
 			},
 			"title":{
-				"type": "string",
+				"type": "text",
 				"analyzer": "` + esAnalyzer + `"
 			},
 			"author":{
-				"type": "string"
+				"type": "text"
 			},
 			"excerpt":{
-				"type": "string",
+				"type": "text",
 				"analyzer": "` + esAnalyzer + `"
 			},
 			"published_at":{
 				"type":"date"
 			},
 			"image_url":{
-				"type":  "string",
-				"index": "not_analyzed"
+				"type":  "keyword",
+				"index": true
 			},
 			"content":{
-				"type": "string",
+				"type": "text",
 				"analyzer": "` + esAnalyzer + `"
 			},
 			"shared_at":{
