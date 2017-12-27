@@ -8,7 +8,8 @@ help:
 	@echo " - make clean  - remove bin files"
 
 build:
-	go get -d -v ./...
+	[ ! -f dep ] && wget https://github.com/golang/dep/releases/download/v0.3.2/dep-linux-amd64 -O dep && chmod +x dep || true
+	./dep ensure
 	go build -o slackbot-links main.go
 
 test:
