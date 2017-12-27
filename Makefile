@@ -13,8 +13,10 @@ build:
 	go build -o slackbot-links main.go
 
 test:
-	go test ./src/links/ -config-file=$(configFile) ${ARGS}
-	go test ./src/mercury/ -config-file=$(configFile) ${ARGS}
+	go test ./src/config/ -v -cover ${ARGS}
+	go test ./src/links/ -v -cover -config-file=$(configFile) ${ARGS}
+	go test ./src/mercury/ -v -cover -config-file=$(configFile) ${ARGS}
+	go test ./src/api/ -v -cover -config-file=$(configFile) ${ARGS}
 
 docapi:
 	[ ! -f snowboard ] && curl -L https://github.com/subosito/snowboard/releases/download/v0.4.3/snowboard-v0.4.3.linux-amd64.tar.gz | tar -xz || true
