@@ -45,7 +45,7 @@ func Search(params url.Values) (*SearchResult, error) {
 	elasticResult, err := searchService.Do(ctx)
 	if err != nil {
 		fmt.Printf("Links::Search() Errors : %s\n", err)
-		return nil, fmt.Errorf("Invalid Seach Query")
+		return nil, fmt.Errorf("Invalid Search Query")
 	}
 
 	res := elasticResultsToLinksResult(elasticResult)

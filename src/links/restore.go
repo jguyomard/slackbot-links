@@ -27,7 +27,7 @@ func Restore(filepath string) bool {
 	file, err := os.Open(filepath)
 	if err != nil {
 		fmt.Println("Error opening links-file:", err)
-		os.Exit(1)
+		return false
 	}
 
 	defer file.Close()

@@ -136,6 +136,7 @@ func (l *Link) Delete() bool {
 		Index(esIndex).
 		Type(esType).
 		Id(l.GetID()).
+		Refresh("true").
 		Do(ctx)
 
 	if err != nil {

@@ -12,20 +12,28 @@ import (
 
 // Listen starts api web server
 func Listen() {
-	conf := config.Get()
+	listenPort := getListenPort()
+	router := createRoutes()
 
-	// Routes
+	fmt.Println("API Listen on port", listenPort)
+	if err := http.ListenAndServe(fmt.Sprintf(":%d", listenPort), NewAPIMiddleware(router)); err != nil {
+		panic(err)
+	}
+}
+
+func getListenPort() int {
+	conf := config.Get()
+	return conf.APIListenPort
+}
+
+func createRoutes() *httprouter.Router {
 	router := httprouter.New()
 	router.GET("/v1/links", handleSearchLinks)
 	router.GET("/v1/links/:id", handleGetLink)
 	router.DELETE("/v1/links/:id", handleDeleteLink)
 	router.NotFound = http.HandlerFunc(handleErrorNotFound)
 
-	// Listen!
-	fmt.Println("API Listen on port", conf.APIListenPort)
-	if err := http.ListenAndServe(fmt.Sprintf(":%d", conf.APIListenPort), NewAPIMiddleware(router)); err != nil {
-		panic(err)
-	}
+	return router
 }
 
 func handleSearchLinks(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
